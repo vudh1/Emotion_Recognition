@@ -41,20 +41,14 @@ Y_train=np_utils.to_categorical(Y_train, num_classes=num_labels)
 Y_test=np_utils.to_categorical(Y_test, num_classes=num_labels)
 
 #normalizing data between oand 1
-X_train -= np.mean(X_train, axis=0)
-X_train /= np.std(X_train, axis=0)
-
-X_test -= np.mean(X_test, axis=0)
-X_test /= np.std(X_test, axis=0)
-
-X_train = X_train.reshape(X_train.shape[0], image_size, image_size, 1)
-X_test = X_test.reshape(X_test.shape[0], image_size, image_size, 1)
+X_train /= 255
+X_test /= 255
 
 ##designing the cnn
 #1st convolution layer
 model = Sequential()
 
-model.add(InputLayer(input_shape=(X_train.shape[1:])))
+model.add(InputLayer(input_shape=X_train[0].shape))
 model.add(Reshape((image_size,image_size,1)))
 model.add(Conv2D(kernel_size=5, strides=1, filters=32, padding='same', activation='relu'))
 model.add(Conv2D(kernel_size=5, strides=1, filters=32, padding='same', activation='relu'))
@@ -64,7 +58,6 @@ model.add(MaxPooling2D(pool_size=2, strides=2))
 model.add(Conv2D(kernel_size=10, strides=1, filters=64, padding='same', activation='relu'))
 model.add(Conv2D(kernel_size=10, strides=1, filters=64, padding='same', activation='relu'))
 model.add(Conv2D(kernel_size=10, strides=1, filters=64, padding='same', activation='relu'))
-model.add(MaxPooling2D(pool_size=(2,2), strides=(2, 2)))
 model.add(MaxPooling2D(pool_size=2, strides=2))
 
 #3rd convolution layer
@@ -98,7 +91,7 @@ model.compile(optimizer=tf.keras.optimizers.Adam(lr = 1e-5),
 #Training the model
 model.fit(X_train, Y_train,
 					batch_size=96,
-					epochs=30,
+					epochs=15,
 					verbose=1,
 					validation_data=(X_test, Y_test),
 					shuffle=True)
@@ -107,3 +100,6 @@ emotion_json = model.to_json()
 with open("data/model.json", "w") as json_file:
 		json_file.write(emotion_json)
 model.save_weights("data/weight.h5")
+
+score = model.evaluate(X_test, Y_test)
+print('Test Accuarcy: {}'.format(score))
