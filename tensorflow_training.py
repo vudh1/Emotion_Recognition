@@ -18,18 +18,18 @@ df = pd.read_csv('data/dataset.csv')
 X_train,Y_train,X_test,Y_test=[],[],[],[]
 
 for index, row in df.iterrows():
-    
-    val=row['pixels'].split(" ")
-    
-    try:
-        if 'Training' in row['usage']:
-           X_train.append(np.array(val,'float32'))
-           Y_train.append(row['emotion'])
-        elif 'Testing' in row['usage']:
-           X_test.append(np.array(val,'float32'))
-           Y_test.append(row['emotion'])
-    except:
-        print('error occured at index {}'.format(index))
+		
+		val=row['pixels'].split(" ")
+		
+		try:
+				if 'Training' in row['usage']:
+					 X_train.append(np.array(val,'float32'))
+					 Y_train.append(row['emotion'])
+				elif 'Testing' in row['usage']:
+					 X_test.append(np.array(val,'float32'))
+					 Y_test.append(row['emotion'])
+		except:
+				print('error occured at index {}'.format(index))
 
 
 X_train = np.array(X_train,'float32')
@@ -93,17 +93,17 @@ model.add(Dense(8, activation='softmax'))
 
 model.compile(optimizer=tf.keras.optimizers.Adam(lr = 1e-5), 
 							loss='categorical_crossentropy',
-              metrics=['accuracy'])
+							metrics=['accuracy'])
 
 #Training the model
 model.fit(X_train, Y_train,
-          batch_size=96,
-          epochs=30,
-          verbose=1,
-          validation_data=(X_test, Y_test),
-          shuffle=True)
+					batch_size=96,
+					epochs=30,
+					verbose=1,
+					validation_data=(X_test, Y_test),
+					shuffle=True)
 
 emotion_json = model.to_json()
 with open("data/model.json", "w") as json_file:
-    json_file.write(emotion_json)
+		json_file.write(emotion_json)
 model.save_weights("data/weight.h5")

@@ -12,31 +12,31 @@ face_haar_cascade = cv2.CascadeClassifier('data/haarcascade_frontalface_default.
 cap=cv2.VideoCapture(0)
 
 while True:
-    ret, camera_image=cap.read()
-    if not ret:
-        continue
-    gray_img= cv2.cvtColor(camera_image, cv2.COLOR_BGR2GRAY)
-    faces_detected = face_haar_cascade.detectMultiScale(gray_img, 1.32, 5)
+	ret, camera_image=cap.read()
+	if not ret:
+		continue
+	gray_img= cv2.cvtColor(camera_image, cv2.COLOR_BGR2GRAY)
+	faces_detected = face_haar_cascade.detectMultiScale(gray_img, 1.32, 5)
 
-    for (x,y,w,h) in faces_detected:
-        cv2.rectangle(camera_image,(x,y),(x+w,y+h),(255,0,0),2)
-        roi_gray=gray_img[y:y+w,x:x+h]
-        roi_gray=cv2.resize(roi_gray,(image_size,image_size))
-        img_pixels = image.img_to_array(roi_gray)
-        img_pixels = np.expand_dims(img_pixels, axis = 0)
-        img_pixels /= 255
-        
-        predictions = model.predict(img_pixels)
-        max_index = np.argmax(predictions[0])
-        predicted_emotion = emotions[max_index]
+	for (x,y,w,h) in faces_detected:
+		cv2.rectangle(camera_image,(x,y),(x+w,y+h),(255,0,0),2)
+		roi_gray=gray_img[y:y+w,x:x+h]
+		roi_gray=cv2.resize(roi_gray,(image_size,image_size))
+		img_pixels = image.img_to_array(roi_gray)
+		img_pixels = np.expand_dims(img_pixels, axis = 0)
+		img_pixels /= 255
+		
+		predictions = model.predict(img_pixels)
+		max_index = np.argmax(predictions[0])
+		predicted_emotion = emotions[max_index]
 
-        cv2.putText(camera_image, predicted_emotion, (int(x), int(y)), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 2)
+		cv2.putText(camera_image, predicted_emotion, (int(x), int(y)), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 2)
 
-    resized_img = cv2.resize( camera_image, (1000, 700))
-    cv2.imshow('Testing Emotion',resized_img)
+	resized_img = cv2.resize( camera_image, (1000, 700))
+	cv2.imshow('Testing Emotion',resized_img)
 
-    if cv2.waitKey(10) == ord('q'):#wait until 'q' key is pressed
-        break
+	if cv2.waitKey(10) == ord('q'):#wait until 'q' key is pressed
+		break
 
 cap.release()
 cv2.destroyAllWindows
