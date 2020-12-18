@@ -5,3 +5,4 @@ data/dataset.csv
 data/model.json
 data/weight.h5
 my-environment/
+.ipynb_checkpoints/

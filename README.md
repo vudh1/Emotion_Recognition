@@ -9,6 +9,5 @@ pip install tensorflow
 pip install pandas
 pip install Pillow
 pip install keras
-pip install cv2
 pip install numpy
 pip install boto3

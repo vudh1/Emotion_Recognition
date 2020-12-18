@@ -34,6 +34,8 @@ emotions = ['Anger', 'Contempt', 'Disgust', 'Fear', 'Happy', 'Neutral', 'Sad', '
 images_array = [[],[],[],[],[],[],[],[]]
 images_size = [0,0,0,0,0,0,0,0]
 
+total_images = 0
+
 face_haar_cascade = cv2.CascadeClassifier('data/haarcascade_frontalface_default.xml')
 
 for i in range(len(emotions)):
@@ -48,16 +50,19 @@ for i in range(len(emotions)):
 			for (x,y,w,h) in faces_detected:
 				cv2.rectangle(image_array,(x,y),(x+w,y+h),(255,0,0),2)
 				roi_gray=gray_img[y:y+w,x:x+h]
-				roi_gray=cv2.resize(roi_gray,(48,48))
+				roi_gray=cv2.resize(roi_gray,(256,256))
 				img_pixels = keras_image.img_to_array(roi_gray)
 				img_pixels = np.expand_dims(img_pixels, axis = 0)
-				
+
 				flat_arr = img_pixels.ravel()
 				
 				images_array[i].append(str(i) + ',' + ' '.join(str(int(num)) for num in flat_arr))
 				images_size[i] += 1
+				total_images += 1
 
-TRAINING_RATIO = 0.8
+print("Total Processed Images: {}".format(total_images))
+
+TRAINING_RATIO = 0.95
 
 with open('data/dataset.csv', 'w') as f:
 	print('emotion,pixels,usage', file=f)

@@ -7,7 +7,7 @@ from keras.preprocessing import image
 model = model_from_json(open("data/model.json", "r").read())
 model.load_weights('data/weight.h5')
 emotions = ['Anger', 'Contempt', 'Disgust', 'Fear', 'Happy', 'Neutral', 'Sad', 'Surprise']
-
+image_size = 256
 face_haar_cascade = cv2.CascadeClassifier('data/haarcascade_frontalface_default.xml')
 cap=cv2.VideoCapture(0)
 
@@ -21,9 +21,10 @@ while True:
     for (x,y,w,h) in faces_detected:
         cv2.rectangle(camera_image,(x,y),(x+w,y+h),(255,0,0),2)
         roi_gray=gray_img[y:y+w,x:x+h]
-        roi_gray=cv2.resize(roi_gray,(48,48))
+        roi_gray=cv2.resize(roi_gray,(image_size,image_size))
         img_pixels = image.img_to_array(roi_gray)
         img_pixels = np.expand_dims(img_pixels, axis = 0)
+        img_pixels /= 255
         
         predictions = model.predict(img_pixels)
         max_index = np.argmax(predictions[0])
