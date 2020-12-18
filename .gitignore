@@ -1,0 +1,7 @@
+.DS_Store
+config/
+data/large_dataset.csv
+data/dataset.csv
+data/model.json
+data/weight.h5
+my-environment/
